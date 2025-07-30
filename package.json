@@ -37,6 +37,7 @@
   "homepage": "https://github.com/IT-26211-Group-1/adultna-lib-utils#readme",
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.856.0",
+    "@aws-sdk/client-ssm": "^3.856.0",
     "mysql2": "^3.14.3"
   }
 }
