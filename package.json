@@ -2,10 +2,27 @@
   "name": "adultna-lib-utils",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "devDependencies": {},
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "typescript": "^5.6.3"
+  },
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "declaration": true,
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -17,5 +34,9 @@
   "bugs": {
     "url": "https://github.com/IT-26211-Group-1/adultna-lib-utils/issues"
   },
-  "homepage": "https://github.com/IT-26211-Group-1/adultna-lib-utils#readme"
+  "homepage": "https://github.com/IT-26211-Group-1/adultna-lib-utils#readme",
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.856.0",
+    "mysql2": "^3.14.3"
+  }
 }

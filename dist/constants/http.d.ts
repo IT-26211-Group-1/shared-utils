@@ -1,0 +1,11 @@
+export declare const OK = 200;
+export declare const CREATED = 201;
+export declare const BAD_REQUEST = 400;
+export declare const UNAUTHORIZED = 401;
+export declare const FORBIDDEN = 403;
+export declare const NOT_FOUND = 404;
+export declare const CONFLICT = 409;
+export declare const UNPROCESSABLE_CONTENT = 422;
+export declare const TOO_MANY_REQUESTS = 429;
+export declare const INTERNAL_SERVER_ERROR = 500;
+export type HttpStatusCode = typeof OK | typeof CREATED | typeof BAD_REQUEST | typeof UNAUTHORIZED | typeof FORBIDDEN | typeof NOT_FOUND | typeof CONFLICT | typeof UNPROCESSABLE_CONTENT | typeof TOO_MANY_REQUESTS | typeof INTERNAL_SERVER_ERROR;
