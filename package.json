@@ -1,7 +1,7 @@
 {
-  "name": "adultna-lib-utils",
+  "name": "@it-26211-group-1/adultna-lib-utils",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared utility functions for the AdultNa project.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
@@ -28,8 +28,15 @@
     "type": "git",
     "url": "git+https://github.com/IT-26211-Group-1/adultna-lib-utils.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "aws",
+    "utils",
+    "adultna",
+    "lambda",
+    "secretsmanager",
+    "ssm"
+  ],
+  "author": "IT-26211 Group 1",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/IT-26211-Group-1/adultna-lib-utils/issues"
@@ -39,5 +46,8 @@
     "@aws-sdk/client-secrets-manager": "^3.856.0",
     "@aws-sdk/client-ssm": "^3.856.0",
     "mysql2": "^3.14.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
