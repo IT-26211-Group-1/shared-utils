@@ -1,6 +1,6 @@
 {
   "name": "@it-26211-group-1/adultna-lib-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared utility functions for the AdultNa project.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
