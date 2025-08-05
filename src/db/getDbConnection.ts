@@ -11,7 +11,7 @@ interface DbSecrets {
 }
 
 async function getSecrets(secretName: string): Promise<DbSecrets> {
-  const client = new SecretsManager({ region: "ap-southeast-2" });
+  const client = new SecretsManager({ region: process.env.AWS_REGION });
   const secret = await client.getSecretValue({ SecretId: secretName });
 
   if (!secret.SecretString) {

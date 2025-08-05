@@ -5,10 +5,11 @@ const promise_1 = require("mysql2/promise");
 const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
 let pool = null;
 async function getSecrets(secretName) {
-    const client = new client_secrets_manager_1.SecretsManager({ region: "ap-southeast-2" });
+    const client = new client_secrets_manager_1.SecretsManager({ region: process.env.AWS_REGION });
     const secret = await client.getSecretValue({ SecretId: secretName });
-    if (!secret.SecretString)
+    if (!secret.SecretString) {
         throw new Error("Missing secret string");
+    }
     return JSON.parse(secret.SecretString);
 }
 async function getDbConnection() {
