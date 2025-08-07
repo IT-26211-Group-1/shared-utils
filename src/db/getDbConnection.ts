@@ -11,8 +11,6 @@ interface DbSecrets {
 }
 
 async function getDbSecrets(): Promise<DbSecrets> {
-  console.log("Getting DB secrets...");
-
   const secretName = process.env.DB_SECRET_NAME;
   const region = process.env.AWS_REGION;
 
@@ -39,20 +37,10 @@ async function getDbSecrets(): Promise<DbSecrets> {
     throw new Error("Missing required DB secrets");
   }
 
-  console.log("DB secrets retrieved:");
-  console.log("Host:", host);
-  console.log("Username:", username);
-  console.log("DB name:", dbname);
-
   return { host, username, password, dbname };
 }
 
 export async function getDbConnection(): Promise<Pool> {
-  if (pool) {
-    console.log("Reusing existing DB connection pool");
-    return pool;
-  }
-
   const { host, username, password, dbname: database } = await getDbSecrets();
 
   console.log("Creating new DB connection pool...");
