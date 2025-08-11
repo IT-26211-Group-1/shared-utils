@@ -4,8 +4,8 @@ exports.getDbConnection = getDbConnection;
 const promise_1 = require("mysql2/promise");
 const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
 let pool = null;
+let dbName = null;
 async function getDbSecrets() {
-    console.log("Getting DB secrets...");
     const secretName = process.env.DB_SECRET_NAME;
     const region = process.env.AWS_REGION;
     if (!secretName)
@@ -29,30 +29,23 @@ async function getDbSecrets() {
     if (!host || !username || !password || !dbname) {
         throw new Error("Missing required DB secrets");
     }
-    console.log("DB secrets retrieved:");
-    console.log("Host:", host);
-    console.log("Username:", username);
-    console.log("DB name:", dbname);
+    dbName = dbname;
     return { host, username, password, dbname };
 }
-async function getDbConnection() {
-    if (pool) {
-        console.log("Reusing existing DB connection pool");
+async function getDbConnection(database) {
+    if (pool)
         return pool;
-    }
-    const { host, username, password, dbname: database } = await getDbSecrets();
-    console.log("Creating new DB connection pool...");
+    const { host, username, password, dbname } = await getDbSecrets();
     pool = (0, promise_1.createPool)({
         host,
         user: username,
         password,
-        database,
+        database: database || dbName || dbname,
         waitForConnections: true,
         connectionLimit: 10,
         maxIdle: 5,
         idleTimeout: 60_000,
         queueLimit: 0,
     });
-    console.log("DB connection pool created");
     return pool;
 }

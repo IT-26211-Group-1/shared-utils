@@ -2,6 +2,7 @@ import { createPool, Pool } from "mysql2/promise";
 import { SecretsManager } from "@aws-sdk/client-secrets-manager";
 
 let pool: Pool | null = null;
+let dbName: string | null = null;
 
 interface DbSecrets {
   host: string;
@@ -37,18 +38,21 @@ async function getDbSecrets(): Promise<DbSecrets> {
     throw new Error("Missing required DB secrets");
   }
 
+  dbName = dbname;
+
   return { host, username, password, dbname };
 }
 
-export async function getDbConnection(): Promise<Pool> {
-  const { host, username, password, dbname: database } = await getDbSecrets();
+export async function getDbConnection(database?: string): Promise<Pool> {
+  if (pool) return pool;
 
-  console.log("Creating new DB connection pool...");
+  const { host, username, password, dbname } = await getDbSecrets();
+
   pool = createPool({
     host,
     user: username,
     password,
-    database,
+    database: database || dbName || dbname,
     waitForConnections: true,
     connectionLimit: 10,
     maxIdle: 5,
@@ -56,6 +60,5 @@ export async function getDbConnection(): Promise<Pool> {
     queueLimit: 0,
   });
 
-  console.log("DB connection pool created");
   return pool;
 }
