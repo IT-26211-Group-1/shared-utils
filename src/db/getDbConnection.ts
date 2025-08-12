@@ -2,7 +2,6 @@ import { createPool, Pool } from "mysql2/promise";
 import { SecretsManager } from "@aws-sdk/client-secrets-manager";
 
 let pool: Pool | null = null;
-let dbName: string | null = null;
 
 interface DbSecrets {
   host: string;
@@ -29,7 +28,7 @@ async function getDbSecrets(): Promise<DbSecrets> {
   try {
     parsed = JSON.parse(SecretString);
   } catch {
-    throw new Error("Failed to parse SecretString JSON");
+    throw new Error("Failed to parse DB secrets JSON");
   }
 
   const { host, username, password, dbname } = parsed as Partial<DbSecrets>;
@@ -38,21 +37,26 @@ async function getDbSecrets(): Promise<DbSecrets> {
     throw new Error("Missing required DB secrets");
   }
 
-  dbName = dbname;
-
   return { host, username, password, dbname };
 }
 
-export async function getDbConnection(database?: string): Promise<Pool> {
+export async function getDbConnection(options?: {
+  withoutDatabase?: boolean;
+  database?: string;
+}) {
   if (pool) return pool;
 
   const { host, username, password, dbname } = await getDbSecrets();
+
+  const databaseToUse = options?.withoutDatabase
+    ? undefined
+    : options?.database || dbname;
 
   pool = createPool({
     host,
     user: username,
     password,
-    database: database || dbName || dbname,
+    database: databaseToUse,
     waitForConnections: true,
     connectionLimit: 10,
     maxIdle: 5,

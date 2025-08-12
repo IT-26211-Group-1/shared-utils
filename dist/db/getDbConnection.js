@@ -4,7 +4,6 @@ exports.getDbConnection = getDbConnection;
 const promise_1 = require("mysql2/promise");
 const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
 let pool = null;
-let dbName = null;
 async function getDbSecrets() {
     const secretName = process.env.DB_SECRET_NAME;
     const region = process.env.AWS_REGION;
@@ -23,24 +22,26 @@ async function getDbSecrets() {
         parsed = JSON.parse(SecretString);
     }
     catch {
-        throw new Error("Failed to parse SecretString JSON");
+        throw new Error("Failed to parse DB secrets JSON");
     }
     const { host, username, password, dbname } = parsed;
     if (!host || !username || !password || !dbname) {
         throw new Error("Missing required DB secrets");
     }
-    dbName = dbname;
     return { host, username, password, dbname };
 }
-async function getDbConnection(database) {
+async function getDbConnection(options) {
     if (pool)
         return pool;
     const { host, username, password, dbname } = await getDbSecrets();
+    const databaseToUse = options?.withoutDatabase
+        ? undefined
+        : options?.database || dbname;
     pool = (0, promise_1.createPool)({
         host,
         user: username,
         password,
-        database: database || dbName || dbname,
+        database: databaseToUse,
         waitForConnections: true,
         connectionLimit: 10,
         maxIdle: 5,

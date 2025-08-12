@@ -1,2 +1,4 @@
-import { Pool } from "mysql2/promise";
-export declare function getDbConnection(database?: string): Promise<Pool>;
+export declare function getDbConnection(options?: {
+  withoutDatabase?: boolean;
+  database?: string;
+});
