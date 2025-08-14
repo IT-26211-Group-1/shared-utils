@@ -9,9 +9,14 @@ interface DbSecrets {
   dbname: string;
 }
 
+// Module-level caches
+let cachedSecrets: DbSecrets | null = null;
 const poolCache: Record<string, Pool> = {};
 
+// Cached SecretsManager call
 export async function getDbSecrets(): Promise<DbSecrets> {
+  if (cachedSecrets) return cachedSecrets;
+
   const secretName = process.env.DB_SECRET_NAME;
   const region = process.env.AWS_REGION;
 
@@ -36,14 +41,9 @@ export async function getDbSecrets(): Promise<DbSecrets> {
     throw new Error("Missing required DB secrets");
   }
 
-  return parsed;
+  cachedSecrets = parsed;
+  return cachedSecrets;
 }
-
-/**
- * Get a Drizzle DB connection for a specific database.
- * @param database
- * @param withoutDatabase
- */
 
 export async function getDbConnection(options?: {
   withoutDatabase?: boolean;
@@ -63,9 +63,9 @@ export async function getDbConnection(options?: {
       password,
       database: databaseToUse,
       waitForConnections: true,
-      connectionLimit: 10,
-      maxIdle: 5,
-      idleTimeout: 60_000,
+      connectionLimit: 20,
+      maxIdle: 10,
+      idleTimeout: 300_000,
       queueLimit: 0,
     });
   }
