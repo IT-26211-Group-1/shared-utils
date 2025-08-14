@@ -1,6 +1,6 @@
 {
   "name": "@it-26211-group-1/adultna-lib-utils",
-  "version": "1.1.2",
+  "version": "1.0.0",
   "description": "Shared utility functions for the AdultNa project.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -45,6 +45,7 @@
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.856.0",
     "@aws-sdk/client-ssm": "^3.856.0",
+    "drizzle-orm": "^0.44.4",
     "mysql2": "^3.14.3"
   },
   "publishConfig": {

@@ -1,7 +1,6 @@
 import { createPool, Pool } from "mysql2/promise";
+import { drizzle } from "drizzle-orm/mysql2";
 import { SecretsManager } from "@aws-sdk/client-secrets-manager";
-
-let pool: Pool | null = null;
 
 interface DbSecrets {
   host: string;
@@ -9,6 +8,8 @@ interface DbSecrets {
   password: string;
   dbname: string;
 }
+
+const poolCache: Record<string, Pool> = {};
 
 async function getDbSecrets(): Promise<DbSecrets> {
   const secretName = process.env.DB_SECRET_NAME;
@@ -24,45 +25,50 @@ async function getDbSecrets(): Promise<DbSecrets> {
 
   if (!SecretString) throw new Error("SecretString is empty");
 
-  let parsed: unknown;
+  let parsed: DbSecrets;
   try {
     parsed = JSON.parse(SecretString);
   } catch {
     throw new Error("Failed to parse DB secrets JSON");
   }
 
-  const { host, username, password, dbname } = parsed as Partial<DbSecrets>;
-
-  if (!host || !username || !password || !dbname) {
+  if (!parsed.host || !parsed.username || !parsed.password || !parsed.dbname) {
     throw new Error("Missing required DB secrets");
   }
 
-  return { host, username, password, dbname };
+  return parsed;
 }
+
+/**
+ * Get a Drizzle DB connection for a specific database.
+ * @param database
+ * @param withoutDatabase
+ */
 
 export async function getDbConnection(options?: {
   withoutDatabase?: boolean;
   database?: string;
 }) {
-  if (pool) return pool;
-
   const { host, username, password, dbname } = await getDbSecrets();
-
   const databaseToUse = options?.withoutDatabase
     ? undefined
     : options?.database || dbname;
 
-  pool = createPool({
-    host,
-    user: username,
-    password,
-    database: databaseToUse,
-    waitForConnections: true,
-    connectionLimit: 10,
-    maxIdle: 5,
-    idleTimeout: 60_000,
-    queueLimit: 0,
-  });
+  // Cache per database
+  const cacheKey = databaseToUse || "__no_db__";
+  if (!poolCache[cacheKey]) {
+    poolCache[cacheKey] = createPool({
+      host,
+      user: username,
+      password,
+      database: databaseToUse,
+      waitForConnections: true,
+      connectionLimit: 10,
+      maxIdle: 5,
+      idleTimeout: 60_000,
+      queueLimit: 0,
+    });
+  }
 
-  return pool;
+  return drizzle(poolCache[cacheKey]);
 }

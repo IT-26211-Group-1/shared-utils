@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDbConnection = getDbConnection;
 const promise_1 = require("mysql2/promise");
+const mysql2_1 = require("drizzle-orm/mysql2");
 const client_secrets_manager_1 = require("@aws-sdk/client-secrets-manager");
-let pool = null;
+const poolCache = {};
 async function getDbSecrets() {
     const secretName = process.env.DB_SECRET_NAME;
     const region = process.env.AWS_REGION;
@@ -24,29 +25,35 @@ async function getDbSecrets() {
     catch {
         throw new Error("Failed to parse DB secrets JSON");
     }
-    const { host, username, password, dbname } = parsed;
-    if (!host || !username || !password || !dbname) {
+    if (!parsed.host || !parsed.username || !parsed.password || !parsed.dbname) {
         throw new Error("Missing required DB secrets");
     }
-    return { host, username, password, dbname };
+    return parsed;
 }
+/**
+ * Get a Drizzle DB connection for a specific database.
+ * @param database
+ * @param withoutDatabase
+ */
 async function getDbConnection(options) {
-    if (pool)
-        return pool;
     const { host, username, password, dbname } = await getDbSecrets();
     const databaseToUse = options?.withoutDatabase
         ? undefined
         : options?.database || dbname;
-    pool = (0, promise_1.createPool)({
-        host,
-        user: username,
-        password,
-        database: databaseToUse,
-        waitForConnections: true,
-        connectionLimit: 10,
-        maxIdle: 5,
-        idleTimeout: 60_000,
-        queueLimit: 0,
-    });
-    return pool;
+    // Cache per database
+    const cacheKey = databaseToUse || "__no_db__";
+    if (!poolCache[cacheKey]) {
+        poolCache[cacheKey] = (0, promise_1.createPool)({
+            host,
+            user: username,
+            password,
+            database: databaseToUse,
+            waitForConnections: true,
+            connectionLimit: 10,
+            maxIdle: 5,
+            idleTimeout: 60_000,
+            queueLimit: 0,
+        });
+    }
+    return (0, mysql2_1.drizzle)(poolCache[cacheKey]);
 }
