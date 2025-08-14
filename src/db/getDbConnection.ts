@@ -11,7 +11,7 @@ interface DbSecrets {
 
 const poolCache: Record<string, Pool> = {};
 
-async function getDbSecrets(): Promise<DbSecrets> {
+export async function getDbSecrets(): Promise<DbSecrets> {
   const secretName = process.env.DB_SECRET_NAME;
   const region = process.env.AWS_REGION;
 

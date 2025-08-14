@@ -2,8 +2,15 @@
   "name": "@it-26211-group-1/adultna-lib-utils",
   "version": "1.0.0",
   "description": "Shared utility functions for the AdultNa project.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "src",
+    "package.json"
+  ],
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "devDependencies": {
     "@types/node": "^24.1.0",
     "typescript": "^5.6.3"

@@ -1,2 +1,3 @@
 export * from "./constants/http";
-export * from "./db/getDbConnection";
+export { getDbSecrets } from "./db/getDbConnection";
+export { getDbConnection } from "./db/getDbConnection";
