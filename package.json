@@ -1,6 +1,6 @@
 {
   "name": "@it-26211-group-1/shared-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared utility functions for the AdultNa project.",
   "type": "module",
   "files": [
