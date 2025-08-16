@@ -14,3 +14,4 @@ export {
 export { getDbSecrets } from "./db/getDbConnection";
 export { getDbConnection } from "./db/getDbConnection";
 export { getPepper } from "./db/getPepper";
+export { getRedisConnection } from "./db/getRedisConnection";
