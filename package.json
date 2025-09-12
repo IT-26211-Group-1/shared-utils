@@ -1,9 +1,8 @@
 {
-  "name": "adultna-lib-utils",
+  "name": "@it-26211-group-1/shared-utils",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/IT-26211-Group-1/adultna-lib-utils/issues"
   },
-  "homepage": "https://github.com/IT-26211-Group-1/adultna-lib-utils#readme"
+  "homepage": "https://github.com/IT-26211-Group-1/adultna-lib-utils#readme",
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.887.0",
+    "drizzle-orm": "^0.44.5",
+    "mysql2": "^3.14.5"
+  }
 }
