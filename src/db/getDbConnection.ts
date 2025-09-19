@@ -1,5 +1,4 @@
 import { createPool, Pool } from "mysql2/promise";
-import { drizzle } from "drizzle-orm/mysql2";
 import { SSMClient, GetParameterCommand } from "@aws-sdk/client-ssm";
 
 interface DbSecrets {
@@ -78,5 +77,5 @@ export async function getDbConnection(options?: {
     });
   }
 
-  return drizzle(poolCache[cacheKey]);
+  return poolCache[cacheKey];
 }
