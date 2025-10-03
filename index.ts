@@ -10,5 +10,3 @@ export {
   UNAUTHORIZED,
   UNPROCESSABLE_CONTENT,
 } from "./src/constants/http";
-
-export { getDbConnection } from "./src/db/getDbConnection";
